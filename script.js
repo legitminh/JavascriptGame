@@ -15,7 +15,7 @@ slider.addEventListener('change', function (e) {
   gameSpeed = e.target.value;
   showGameSpeed.innerHTML = gameSpeed;
 })
-
+window.addEventListener('load', function(){ //only run when website is loaded, in case of large website
 const ctx = canvas.getContext('2d')
 console.log(ctx);
 const CANVAS_WIDTH = canvas.width = 800;
@@ -37,7 +37,7 @@ const CANVAS_HEIGHT = canvas.height = 700;
 
 
 var framewidthDict = {}
-var masterCounter = 0;
+var gameFrame = 0;
 var sx = 0;
 var sy = 0;
 const sw = 575; //sprite width
@@ -104,27 +104,21 @@ class Layer{
     this.y = 0;
     this.width = 2400;
     this.height = 700;
-    this.x2 = this.width;
     this.image = image;
     this.speedModifier = speedModifier;
     this.speed = gameSpeed;
   }
   update(){
     this.speed = gameSpeed * this.speedModifier;
-    if (this.x <= -this.width){ //if out of screen, move infront of x2
-      this.x = this.width + this.x2 - this.speed;
+    if (this.x <= -this.width){
+      this.x = 0;
     }
-    if (this.x2 <= -this.width){ //if out of screen, move infront of x
-      this.x2 = this.width + this.x - this.speed;
-    }
-    //move left [x, x2]
     this.x = Math.floor(this.x - this.speed);
-    this.x2 = Math.floor(this.x2 - this.speed)
     
   }
   draw(){
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    ctx.drawImage(this.image, this.x2, this.y, this.width, this.height);  
+    ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);  
   }
   updateAndDraw(){
     this.update();
@@ -142,13 +136,13 @@ const layers = [
 function animate() { //global render loop
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   let animationLength = spriteAnimations[playerState].loc.length;
-  let x = sw * (Math.floor(masterCounter / 5) % animationLength);
-  let y = spriteAnimations[playerState].loc[(Math.floor(masterCounter / 5) % animationLength)].y;
-  //ctx.drawImage(playerImage, sw * (Math.floor(masterCounter / 5) % 7), sy, sw, sh, 0, 0, sw, sh);
+  let x = sw * (Math.floor(gameFrame * gameSpeed / 20) % animationLength);
+  let y = spriteAnimations[playerState].loc[(Math.floor(gameFrame / 5) % animationLength)].y;
+  //ctx.drawImage(playerImage, sw * (Math.floor(gameFrame / 5) % 7), sy, sw, sh, 0, 0, sw, sh);
   //image, sx, sy, sourcewidth, sourceheight, dx,dy,dw,dh
   
   
-  masterCounter++;
+  gameFrame++;
   layers.forEach(object => {
     object.updateAndDraw();
   });
@@ -156,3 +150,5 @@ function animate() { //global render loop
   requestAnimationFrame(animate);
 }
 animate();
+});
+
