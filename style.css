@@ -1,0 +1,39 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+ 
+body {
+  background: black;
+}
+#container {
+  position: absolute;
+  width: 800px;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  border: 3px solid white;
+  font-size: 25px;
+}
+
+#canvas1 {
+  border: 5px solid black;
+  height: 600px;
+  width: 600px;
+}
+p{
+  color: white;
+}
+
+.controls {
+  z-index: 10;
+  top: 100px;
+  left: 50%;
+}
+
+.controls,
+select,
+option {
+  font-size: 25px;
+}
