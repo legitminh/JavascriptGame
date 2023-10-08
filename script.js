@@ -1,7 +1,9 @@
 let playerState = "idle"; //player animation state
 let gameSpeed = 0; //px/s
+let lastTime = 0;
+let dt = 0;
 const canvas = document.getElementById('canvas1');
-
+let mouseBox = undefined;
 const dropdown = document.getElementById('stateSelection');
 dropdown.addEventListener('change', function(e){
   playerState = e.target.value;
@@ -11,16 +13,24 @@ const slider = document.getElementById("slider");
 const showGameSpeed = document.getElementById("showGameSpeed");
 showGameSpeed.innerHTML = gameSpeed = slider.value;
 
+//GameSpeedSlider listener
 slider.addEventListener('change', function (e) {
   gameSpeed = e.target.value;
   showGameSpeed.innerHTML = gameSpeed;
-})
+});
+
 window.addEventListener('load', function(){ //only run when website is loaded, in case of large website
 const ctx = canvas.getContext('2d')
 console.log(ctx);
-const CANVAS_WIDTH = canvas.width = 800;
-const CANVAS_HEIGHT = canvas.height = 700;
+const CANVAS_WIDTH = canvas.width = 600;
+const CANVAS_HEIGHT = canvas.height = 600;
+let canvasPosition = canvas.getBoundingClientRect();
+window.addEventListener('click', function(e){
+  mouseBox = [e.x - canvasPosition.left - 25, e.y - canvasPosition.top - 25, 50, 50];
+  console.log(mouseBox);
+  console.log(canvasPosition);
 
+});
 //BgImages
   const backgroundLayer1 = new Image();
   backgroundLayer1.src = 'backgroundLayers/layer-1.png';
@@ -36,7 +46,6 @@ const CANVAS_HEIGHT = canvas.height = 700;
   playerImage.src = 'shadow_dog.png';
 
 
-var framewidthDict = {}
 var gameFrame = 0;
 var sx = 0;
 var sy = 0;
@@ -85,6 +94,7 @@ const animationStates = [
     frames: 4,
   },
 ];
+
 var spriteAnimations = [];
 animationStates.forEach((state, index) => { //set up player animations values in animationStates
   let frames = {
@@ -120,10 +130,7 @@ class Layer{
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);  
   }
-  updateAndDraw(){
-    this.update();
-    this.draw();
-  }
+  updateAndDraw(){this.update();this.draw();}
 };
 const layers = [
   new Layer(backgroundLayer1,0.2),
@@ -133,22 +140,63 @@ const layers = [
   new Layer(backgroundLayer5,1),
 ];
 
-function animate() { //global render loop
+class Enemy{
+  constructor(){
+    this.image = new Image();
+    this.image.src = 'enemies/enemy1.png';
+    this.frameCount = 6;
+    this.xs = 293;
+    this.ys = 155;
+
+    this.x = Math.random() * (CANVAS_WIDTH -  this.xs);
+    this.y = Math.random() * (CANVAS_HEIGHT - this.ys);
+    this.speed = -1;
+    this.animationSpeed = Math.random()+0.5;
+
+  }
+  update(){
+    if ((this.x + this.xs) < 0){
+      this.x = CANVAS_WIDTH;
+    }
+    else{
+      this.x += this.speed*gameSpeed;
+    }
+    this.y += Math.sin(gameFrame/20*this.animationSpeed)*2;
+  }
+  draw(){
+    ctx.drawImage(this.image, (Math.floor(gameFrame*gameSpeed*this.animationSpeed)%this.frameCount) * this.xs, 0, this.xs, this.ys, this.x, this.y, this.xs, this.ys, 
+      ); 
+  }
+  updateAndDraw(){this.update();this.draw();} 
+}
+let enemiesArray = [];
+for (let i = 0; i<10; i++){
+  enemiesArray.push(new Enemy());
+}
+
+function animate(timestamp) { //global render loop
+  console.log(dt);
+  dt = timestamp - lastTime;//ms per frame 
+  lastTime = timestamp;
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   let animationLength = spriteAnimations[playerState].loc.length;
-  let x = sw * (Math.floor(gameFrame * gameSpeed / 20) % animationLength);
-  let y = spriteAnimations[playerState].loc[(Math.floor(gameFrame / 5) % animationLength)].y;
+  let x = sw * (Math.floor(gameFrame * gameSpeed) % animationLength);
+  let y = spriteAnimations[playerState].loc[(Math.floor(gameFrame * gameSpeed) % animationLength)].y;
   //ctx.drawImage(playerImage, sw * (Math.floor(gameFrame / 5) % 7), sy, sw, sh, 0, 0, sw, sh);
   //image, sx, sy, sourcewidth, sourceheight, dx,dy,dw,dh
   
   
   gameFrame++;
-  layers.forEach(object => {
-    object.updateAndDraw();
-  });
+  layers.forEach(object => {object.updateAndDraw();});
+  enemiesArray.forEach(object => {object.updateAndDraw()})
   ctx.drawImage(playerImage, x, y, sw, sh, 0, 0, sw, sh);
+  if (mouseBox !== undefined){
+    ctx.fillStyle = 'white';
+    ctx.fillRect(mouseBox[0],mouseBox[1],mouseBox[2],mouseBox[3]);
+  }
   requestAnimationFrame(animate);
+  
 }
-animate();
+animate(0);
 });
 
