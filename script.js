@@ -1,3 +1,4 @@
+//used for first few parts of tutorial, deprecated.
 let playerState = "idle"; //player animation state
 let gameSpeed = 0; //px/s
 let lastTime = 0;
@@ -175,7 +176,6 @@ for (let i = 0; i<10; i++){
 }
 
 function animate(timestamp) { //global render loop
-  console.log(dt);
   dt = timestamp - lastTime;//ms per frame 
   lastTime = timestamp;
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
