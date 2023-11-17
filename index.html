@@ -1,38 +1,25 @@
+<!-- Source: https://gist.github.com/straker/81b59eecf70da93af396f963596dfdc5 -->
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>SpriteAnimation</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  
+  <title>Basic Pong HTML Game</title>
+  <meta charset="UTF-8">
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  </style>
 </head>
-
 <body>
-  <div>
-    <canvas width = "600" height = "600" id="canvas1"></canvas>
-  </div>
-  <!--
-  <div class="controls">
-    <p>Game speed: <span id = 'showGameSpeed'></span> </p>
-    <input step="0.0625" type = "range" min = "0" max = "4" value = "1" class="slider" id="slider">
-    <select id="stateSelection" name="animations">
-      <option value="idle">Idle</option>
-      <option value="jump">Idle</option>
-      <option value="fall">Idle</option>
-      <option value="run">Idle</option>
-      <option value="dizzy">Idle</option>
-      <option value="sit">Idle</option>
-      <option value="roll">Idle</option>
-      <option value="bite">Idle</option>
-      <option value="ko">Idle</option>
-      <option value="getHit">Idle</option>
-    </select>
-  </div> -->
-
-<!-- <script src="script.js"></script> -->
-<script type="module" src="main.js"></script>
+<canvas width="750" height="585" id="game"></canvas>
+<script src="main.js"></script>
 </body>
-
 </html>
