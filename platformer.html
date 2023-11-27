@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platformer</title>
+</head>
+<body>
+    <canvas width="750" height="585" id="game"></canvas>
+<script>
+
+const canvas = document.getElementById('game');
+const context = canvas.getContext('2d');
+const player = {
+    x: canvas.width/2,
+    y: canvas.height/2,
+    dx: 0,
+    dy: 0,
+    sx: 10,
+    sy: 10,
+
+}
+// game loop
+function loop() {
+    context.fillStyle = 'black';
+    context.fillRect(0,0, screen.width, screen.height);
+    player.x += player.dx;
+    player.y += player.dy;
+    if (player.y > screen.height - player.sy){player.y = screen.height - player.sy; player.dy = 0;}
+    else( player.dy ++)
+    // player.dx
+    context.fillStyle = 'white';
+    context.fillRect(player.x, player.y, player.sx, player.sy);
+    // context.fillRect(0,0, 50, 50);
+    
+    requestAnimationFrame(loop);
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.which === 87) { //w
+        
+    }
+    if (e.which === 83) { //s
+    }
+});
+
+// start the game
+requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>
